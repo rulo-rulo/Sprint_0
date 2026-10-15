@@ -1,0 +1,28 @@
+# --- IDE / editores ---
+.idea/
+*.iml
+*.iml.local
+
+# --- Configuracion con credenciales (usar configBD.sample.php) ---
+src/database/configBD.php
+
+# --- Salidas de pruebas ---
+tests/out/
+tests/*.class
+
+# --- Android / Gradle ---
+src/android/MyApplication/.gradle/
+src/android/MyApplication/build/
+src/android/MyApplication/app/build/
+src/android/MyApplication/local.properties
+src/android/MyApplication/.idea/
+*.apk
+*.aab
+
+# --- Sistema operativo ---
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# --- Ficheros temporales de Office ---
+~$*
