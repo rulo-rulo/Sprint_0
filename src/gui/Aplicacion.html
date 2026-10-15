@@ -1,0 +1,68 @@
+<!-- ===================================================================================
+FICHERO: src\gui\Aplicacion.html
+DESCRIPCION: Interfaz web que muestra el ultimo codigo almacenado
+COPYRIGHT: (c) 2026 Raúl Sanabria Rodado
+FECHA: 2026-10-15
+AUTOR: Raúl Sanabria Rodado
+APORTACION: Pantalla de la aplicacion
+=================================================================================== -->
+<!-- ---------------------------------------------------- -->
+<!-- ---------------------------------------------------- -->
+<!DOCTYPE html>
+<html>
+
+<!-- ---------------------------------------------------- -->
+<!-- ---------------------------------------------------- -->
+<head>
+<meta charset="utf-8"/>
+<title>Codigo</title>
+
+<!-- ---------------------------------------------------- -->
+<script src="../frontend_business_logic/obtenerUltimoCodigo.js"></script>
+
+<!-- ---------------------------------------------------- -->
+<script>
+function mostrarCodigo( err, resultado ) {
+	var salida = document.getElementById( "codigo" )
+	if ( err ) {
+		// sin codigo o error: se deja vacio
+		salida.innerHTML = ""
+		return
+	}
+	salida.innerHTML = resultado.valor
+} // ()
+
+// consulta el último código al cargar la página
+window.onload = function() {
+	obtenerUltimoCodigo( mostrarCodigo )
+} // ()
+</script>
+
+<!-- ---------------------------------------------------- -->
+<style>
+html, body {
+	height: 100%;
+	margin: 0;
+}
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+#codigo {
+	font-size: 6em;
+	font-family: sans-serif;
+}
+</style>
+
+</head>
+
+<!-- ---------------------------------------------------- -->
+<!-- ---------------------------------------------------- -->
+<body>
+<div id="codigo"></div>
+</body>
+</html>
+<!-- ---------------------------------------------------- -->
+<!-- ---------------------------------------------------- -->
+<!-- ---------------------------------------------------- -->
