@@ -17,6 +17,10 @@ APORTACION: Pantalla de la aplicacion
 <meta charset="utf-8"/>
 <title>Codigo</title>
 
+<!-- la pagina se recarga sola cada 2 segundos: si el beacon esta emitiendo,
+     el numero va cambiando sin tener que refrescar a mano -->
+<meta http-equiv="refresh" content="2"/>
+
 <!-- ---------------------------------------------------- -->
 <script src="../frontend_business_logic/obtenerUltimoCodigo.js"></script>
 
@@ -24,12 +28,20 @@ APORTACION: Pantalla de la aplicacion
 <script>
 function mostrarCodigo( err, resultado ) {
 	var salida = document.getElementById( "codigo" )
+	var fecha  = document.getElementById( "fecha" )
+
 	if ( err ) {
-		// sin codigo o error: se deja vacio
-		salida.innerHTML = ""
+		// todavia no ha llegado ningun codigo, o ha fallado el REST:
+		// se deja el hueco en lugar de borrarlo, para que no parpadee
+		salida.innerHTML = "--"
+		fecha.innerHTML  = err
 		return
 	}
+
+	// el valor y la fecha ya venian en la respuesta, pero antes la fecha
+	// se tirada y no se llegaba a ver nunca
 	salida.innerHTML = resultado.valor
+	fecha.innerHTML  = resultado.fecha
 } // ()
 
 // consulta el último código al cargar la página
@@ -46,12 +58,19 @@ html, body {
 }
 body {
 	display: flex;
+	flex-direction: column;   /* el codigo arriba, la fecha debajo */
 	align-items: center;
 	justify-content: center;
 }
 #codigo {
 	font-size: 6em;
 	font-family: sans-serif;
+}
+#fecha {
+	margin-top: 12px;
+	font-size: 14px;
+	font-family: sans-serif;
+	color: gray;
 }
 </style>
 
@@ -61,6 +80,7 @@ body {
 <!-- ---------------------------------------------------- -->
 <body>
 <div id="codigo"></div>
+<div id="fecha"></div>
 </body>
 </html>
 <!-- ---------------------------------------------------- -->

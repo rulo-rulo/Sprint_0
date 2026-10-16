@@ -16,6 +16,19 @@
 -- ---------------------------------------------------------------
 -- ---------------------------------------------------------------
 
+-- ---------------------------------------------------------------
+-- creacion de la base de datos y de la tabla CODIGO
+--
+-- sin el CREATE DATABASE el fichero no sirve para montar el
+-- proyecto en otra maquina: hay que crearla a mano antes
+-- ---------------------------------------------------------------
+
+CREATE DATABASE IF NOT EXISTS biometria
+  DEFAULT CHARACTER SET utf8mb4
+  DEFAULT COLLATE utf8mb4_unicode_ci;
+
+USE biometria;
+
 CREATE TABLE IF NOT EXISTS CODIGO (
   id     INT      NOT NULL AUTO_INCREMENT,
   valor  INT      NOT NULL,

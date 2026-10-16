@@ -92,6 +92,19 @@ public:
         // 3. Configurar potencia y nombre visible en el escaneo
         Bluefruit.setTxPower( (*this).txPower );
         Bluefruit.setName( (*this).nombreEmisora );
+
+        // ATENCION: hay que vaciar el ScanResponse antes de anyadirle el nombre.
+        //
+        // setBeacon() -> BLEBeacon::start() ya limpia SOLO la carga del anuncio
+        // (adv.clearData()), por eso el beacon no se ensancha vuelta tras vuelta.
+        // Pero el ScanResponse es un buffer distinto y nadie lo limpia: cada
+        // llamada a addName() vuelve a meter 10 bytes ("rulitas06" -> tipo 0x09
+        // + 8 caracteres) y el anuncio de respuesta solo admite 31.
+        //
+        // Asi que a partir de la 3a vuelta del loop() addName() falla en silencio
+        // y el nombre DESAPARECE del escaneo. Como el telefono filtra por nombre,
+        // el beacon deja de reconocerse y ninguna medida vuelve a llegar.
+        Bluefruit.ScanResponse.clearData();
         Bluefruit.ScanResponse.addName();
 
         // 4. Cargar el beacon en la carga util del anuncio
@@ -101,6 +114,16 @@ public:
 
         // 5. Iniciar la emision continua sin tiempo limite (0 = indefinido)
         Bluefruit.Advertising.start( 0 );
+
+        Globales::elPuerto.escribir( "\n[beacon] EMITIENDO  t=" );
+        Globales::elPuerto.escribir( (long) millis() );
+        Globales::elPuerto.escribir( " ms  nombre=" );
+        Globales::elPuerto.escribir( (*this).nombreEmisora );
+        Globales::elPuerto.escribir( "  major=" );
+        Globales::elPuerto.escribir( (int) major );
+        Globales::elPuerto.escribir( "  minor(numero)=" );
+        Globales::elPuerto.escribir( (int) minor );
+        Globales::elPuerto.escribir( "\n" );
     }
 
     // Emite un iBeacon con una carga de bytes personalizada (para pruebas libres)
@@ -135,7 +158,15 @@ public:
 
         Bluefruit.Advertising.restartOnDisconnect(true);
         Bluefruit.Advertising.setInterval(100, 100);
-        Bluefruit.Advertising.setFastTimeout( 1 );
+
+        // OJO: NO usar aqui setFastTimeout(1). Ese metodo no fija la duracion de
+        // ESTE anuncio, sino el modo rapido de la emisora ENTERA (fija el campo
+        // _fast_timeout del objeto Advertising, que es unico y persiste). Cualquier
+        // start() posterior pasaria a anunciarse 1 s y el SoftDevice lo cortaria.
+        //
+        // Ademas, como esperar() es delay(), el motivo de parada
+        // (ADV_SET_TERMINATED) no llega a procesarse y _running se desincroniza,
+        // con lo que detenerAnuncio() deja de hacer efecto.
 
         Bluefruit.Advertising.start( 0 );
 
