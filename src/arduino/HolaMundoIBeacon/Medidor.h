@@ -39,8 +39,14 @@ public:
     }
 
     // Devuelve la medicion simulada de CO2.
+    //
+    // Este valor recorre todo el sistema como el campo "minor" del iBeacon:
+    // lo lee el Arduino, lo emite la emisora, lo descodifica Android y lo
+    // manda por REST al servidor. Si no coincide con lo que hay flasheado en
+    // la placa, la cadena sigue funcionando pero el numero que aparece en la
+    // web no es el del codigo fuente, que es imposible de demostrar.
     int medirCO2() {
-        return 1005; //medicion simulada
+        return 6767; //medicion simulada
     }
 
     // Devuelve la medicion simulada de Temperatura.
